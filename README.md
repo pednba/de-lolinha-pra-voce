@@ -79,3 +79,25 @@ npm run dev
 
 Veja `.env.example` para a lista de variáveis de ambiente necessárias
 (Supabase, Google Sheets e número de WhatsApp da Lolinha).
+
+## Deploy na Vercel
+
+O projeto é Next.js puro, autodetectado pela Vercel — não precisa de `vercel.json`.
+
+1. Em [vercel.com/new](https://vercel.com/new), importe `pednba/de-lolinha-pra-voce`.
+   Se o repo não aparecer, ajuste as permissões do GitHub App da Vercel.
+2. **Production Branch** (em *Settings → Git*): aponte para a branch default do
+   repositório.
+3. Configure as **Environment Variables** antes do primeiro deploy:
+
+   | Variável | Quando | Observação |
+   | --- | --- | --- |
+   | `NEXT_PUBLIC_WHATSAPP_NUMBER` | sempre | número real da Lolinha, ex.: `5511999999999` |
+   | `USE_SAMPLE_CATALOG` | teste | `true` para subir já funcional; remova ao conectar a Sheet |
+   | `GOOGLE_SHEET_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY` | catálogo real | — |
+   | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | pedidos | — |
+
+   > As variáveis `NEXT_PUBLIC_*` são embutidas em **build time** — defina-as antes
+   > do deploy. `GOOGLE_PRIVATE_KEY` deve manter as quebras de linha como `\n`.
+
+4. Deploy. Cada push na branch conectada gera um Preview Deployment automático.
