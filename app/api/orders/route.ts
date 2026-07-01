@@ -31,6 +31,12 @@ export async function POST(request: Request) {
     status: "novo" as const,
   };
 
+  // Supabase ainda não configurado (ex.: teste com catálogo de exemplo):
+  // não persiste, mas não quebra o fluxo de fechamento.
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ pedido, persisted: false }, { status: 200 });
+  }
+
   const supabase = createClient();
   const { data, error } = await supabase
     .from("pedidos")

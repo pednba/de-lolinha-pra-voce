@@ -5,6 +5,7 @@
 //   F: imagemUrl | G: necessidades (ids separados por vírgula) | H: ativo
 import { google } from "googleapis";
 import type { Product } from "@/types";
+import { SAMPLE_PRODUCTS } from "@/lib/sample-catalog";
 
 const SHEET_RANGE = "Produtos!A2:H";
 
@@ -21,6 +22,11 @@ function getSheetsClient() {
 
 /** Lê os produtos do catálogo a partir da Google Sheet. */
 export async function fetchProducts(): Promise<Product[]> {
+  // Catálogo de exemplo para testar o fluxo sem a Google Sheet configurada.
+  if (process.env.USE_SAMPLE_CATALOG === "true") {
+    return SAMPLE_PRODUCTS.filter((p) => p.ativo);
+  }
+
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
   // Sem credenciais configuradas: retorna vazio em vez de quebrar (útil em
   // build/preview antes de conectar a planilha).
