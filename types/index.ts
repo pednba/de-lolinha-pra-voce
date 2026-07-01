@@ -28,6 +28,7 @@ export interface Necessidade {
   id: string;
   label: string;
   categoria: string;
+  emoji?: string;
 }
 
 /** Pedido salvo no Supabase e enviado para fechamento via WhatsApp. */

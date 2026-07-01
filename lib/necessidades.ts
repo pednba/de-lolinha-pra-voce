@@ -4,14 +4,14 @@
 import type { Necessidade } from "@/types";
 
 export const NECESSIDADES: Necessidade[] = [
-  { id: "hidratacao", label: "Hidratação", categoria: "Skincare" },
-  { id: "oleosidade", label: "Controle de oleosidade", categoria: "Skincare" },
-  { id: "acne", label: "Cuidado com acne", categoria: "Skincare" },
-  { id: "antiidade", label: "Anti-idade", categoria: "Skincare" },
-  { id: "protecao-solar", label: "Proteção solar", categoria: "Skincare" },
-  { id: "maquiagem", label: "Maquiagem", categoria: "Makeup" },
-  { id: "cabelos", label: "Cuidado com os cabelos", categoria: "Cabelo" },
-  { id: "perfumaria", label: "Perfumaria", categoria: "Perfumaria" },
+  { id: "hidratacao", label: "Hidratação", categoria: "Skincare", emoji: "💧" },
+  { id: "oleosidade", label: "Controle de oleosidade", categoria: "Skincare", emoji: "✨" },
+  { id: "acne", label: "Cuidado com acne", categoria: "Skincare", emoji: "🌿" },
+  { id: "antiidade", label: "Anti-idade", categoria: "Skincare", emoji: "⏳" },
+  { id: "protecao-solar", label: "Proteção solar", categoria: "Skincare", emoji: "☀️" },
+  { id: "maquiagem", label: "Maquiagem", categoria: "Makeup", emoji: "💄" },
+  { id: "cabelos", label: "Cuidado com os cabelos", categoria: "Cabelo", emoji: "💇‍♀️" },
+  { id: "perfumaria", label: "Perfumaria", categoria: "Perfumaria", emoji: "🌸" },
 ];
 
 const BY_ID = new Map(NECESSIDADES.map((n) => [n.id, n]));

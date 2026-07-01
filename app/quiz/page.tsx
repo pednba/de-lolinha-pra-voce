@@ -29,11 +29,12 @@ export default function QuizPage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-12">
-        <h1 className="text-2xl font-semibold">
+        <h1 className="text-3xl font-semibold tracking-tight">
           Conte pra Lolinha o que você precisa
         </h1>
         <p className="mt-2 text-neutral-600">
-          Escolha suas necessidades de beleza e receba kits curados pra você.
+          Escolha uma ou mais necessidades de beleza e receba kits curados pra
+          você.
         </p>
 
         <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -45,27 +46,43 @@ export default function QuizPage() {
                 type="button"
                 onClick={() => toggle(n.id)}
                 aria-pressed={ativa}
-                className={`rounded-xl border px-4 py-3 text-left transition-colors ${
+                className={`flex items-center gap-3 rounded-2xl border px-4 py-3.5 text-left transition-all ${
                   ativa
-                    ? "border-pink-600 bg-pink-50 text-pink-800"
-                    : "border-neutral-200 hover:border-neutral-300"
+                    ? "border-pink-500 bg-pink-50 ring-2 ring-pink-200"
+                    : "border-neutral-200 bg-white/70 hover:border-pink-300"
                 }`}
               >
-                <span className="block font-medium">{n.label}</span>
-                <span className="text-sm text-neutral-500">{n.categoria}</span>
+                <span className="text-2xl">{n.emoji}</span>
+                <span className="flex-1">
+                  <span className="block font-medium">{n.label}</span>
+                  <span className="text-sm text-neutral-500">{n.categoria}</span>
+                </span>
+                <span
+                  className={`grid h-6 w-6 place-items-center rounded-full border text-sm ${
+                    ativa
+                      ? "border-pink-500 bg-pink-500 text-white"
+                      : "border-neutral-300 text-transparent"
+                  }`}
+                >
+                  ✓
+                </span>
               </button>
             );
           })}
         </div>
 
-        <button
-          type="button"
-          onClick={continuar}
-          disabled={selecionadas.size === 0}
-          className="mt-8 inline-flex items-center justify-center rounded-full bg-pink-600 px-6 py-3 font-medium text-white transition-colors hover:bg-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Ver meus kits ({selecionadas.size})
-        </button>
+        <div className="sticky bottom-4 mt-8">
+          <button
+            type="button"
+            onClick={continuar}
+            disabled={selecionadas.size === 0}
+            className="w-full rounded-full bg-pink-600 px-6 py-3.5 text-lg font-medium text-white shadow-lg shadow-pink-600/20 transition-colors hover:bg-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {selecionadas.size === 0
+              ? "Escolha ao menos uma necessidade"
+              : `Ver meus kits (${selecionadas.size})`}
+          </button>
+        </div>
       </main>
       <Footer />
     </div>

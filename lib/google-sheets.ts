@@ -22,16 +22,15 @@ function getSheetsClient() {
 
 /** Lê os produtos do catálogo a partir da Google Sheet. */
 export async function fetchProducts(): Promise<Product[]> {
-  // Catálogo de exemplo para testar o fluxo sem a Google Sheet configurada.
-  if (process.env.USE_SAMPLE_CATALOG === "true") {
-    return SAMPLE_PRODUCTS.filter((p) => p.ativo);
-  }
-
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-  // Sem credenciais configuradas: retorna vazio em vez de quebrar (útil em
-  // build/preview antes de conectar a planilha).
-  if (!spreadsheetId || !process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL) {
-    return [];
+  const temCredenciais =
+    Boolean(spreadsheetId) && Boolean(process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL);
+
+  // Enquanto a Google Sheet não estiver configurada (ou com USE_SAMPLE_CATALOG),
+  // usa o catálogo de exemplo — assim o protótipo funciona de imediato. Quando
+  // as credenciais forem preenchidas, a planilha real assume automaticamente.
+  if (process.env.USE_SAMPLE_CATALOG === "true" || !temCredenciais) {
+    return SAMPLE_PRODUCTS.filter((p) => p.ativo);
   }
 
   const sheets = getSheetsClient();
