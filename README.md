@@ -42,6 +42,33 @@ lib/
 types/                  # tipos compartilhados
 ```
 
+## Dados
+
+### Catálogo (Google Sheet)
+
+O catálogo vive numa Google Sheet com uma aba **`Produtos`**. A partir da linha 2:
+
+| Coluna | Campo          | Exemplo                          |
+| ------ | -------------- | -------------------------------- |
+| A      | `id`           | `serum-vit-c`                    |
+| B      | `nome`         | Sérum Vitamina C                 |
+| C      | `descricao`    | Ilumina e uniformiza a pele      |
+| D      | `categoria`    | Skincare                         |
+| E      | `preco`        | `R$ 89,90`                       |
+| F      | `imagemUrl`    | https://…/serum.jpg              |
+| G      | `necessidades` | `antiidade,hidratacao`           |
+| H      | `ativo`        | `sim` / `não`                    |
+
+Os ids da coluna `necessidades` devem casar com os ids definidos em
+`lib/necessidades.ts` (usados no quiz).
+
+### Pedidos (Supabase)
+
+O schema fica em `supabase/migrations/0001_pedidos.sql`. Aplique com a
+[Supabase CLI](https://supabase.com/docs/guides/cli) (`supabase db push`) ou
+colando o SQL no editor do projeto. Os pedidos são gravados pelo servidor com a
+service role key; o RLS fica habilitado sem políticas públicas.
+
 ## Desenvolvimento
 
 ```bash
