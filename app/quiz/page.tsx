@@ -1,15 +1,24 @@
 // Página do quiz: a cliente escolhe suas necessidades de beleza.
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { NECESSIDADES } from "@/lib/necessidades";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { track } from "@/lib/track";
 
 export default function QuizPage() {
   const router = useRouter();
   const [selecionadas, setSelecionadas] = useState<Set<string>>(new Set());
+  const jaMediu = useRef(false);
+
+  useEffect(() => {
+    // Guard contra a montagem dupla do StrictMode em desenvolvimento.
+    if (jaMediu.current) return;
+    jaMediu.current = true;
+    track("quiz_iniciado");
+  }, []);
 
   function toggle(id: string) {
     setSelecionadas((prev) => {
@@ -21,8 +30,10 @@ export default function QuizPage() {
   }
 
   function continuar() {
-    const query = Array.from(selecionadas).join(",");
-    router.push(`/kits?necessidades=${encodeURIComponent(query)}`);
+    const escolhidas = Array.from(selecionadas);
+    // Medido aqui, e não a cada toque: só a escolha final vira interesse.
+    track("necessidade_escolhida", { necessidades: escolhidas });
+    router.push(`/kits?necessidades=${encodeURIComponent(escolhidas.join(","))}`);
   }
 
   return (

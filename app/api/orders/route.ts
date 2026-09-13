@@ -32,8 +32,9 @@ export async function POST(request: Request) {
   };
 
   // Supabase ainda não configurado (ex.: teste com catálogo de exemplo):
-  // não persiste, mas não quebra o fluxo de fechamento.
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  // não persiste, mas não quebra o fluxo de fechamento. O guard olha a service
+  // role key porque é ela que grava — só a URL não basta para inserir.
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return NextResponse.json({ pedido, persisted: false }, { status: 200 });
   }
 
