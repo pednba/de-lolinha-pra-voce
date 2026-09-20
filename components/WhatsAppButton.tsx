@@ -4,6 +4,7 @@
 import { useState } from "react";
 import type { Kit } from "@/types";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { track } from "@/lib/track";
 
 export function WhatsAppButton({
   kit,
@@ -17,6 +18,12 @@ export function WhatsAppButton({
   async function fechar() {
     setEnviando(true);
     const link = buildWhatsAppLink(kit, clienteNome);
+
+    track("whatsapp_aberto", {
+      necessidades: kit.necessidades,
+      kitId: kit.id,
+      valorTotal: kit.precoTotal,
+    });
 
     try {
       // `keepalive` garante que a gravação conclua mesmo com a navegação a seguir.

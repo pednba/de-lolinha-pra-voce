@@ -6,6 +6,7 @@ import { sanitizeNecessidades, necessidadeLabel } from "@/lib/necessidades";
 import { KitsView } from "@/components/KitsView";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { TrackView } from "@/components/TrackView";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ export default async function KitsPage({
 
   return (
     <div className="flex min-h-screen flex-col">
+      <TrackView tipo="kits_vistos" necessidades={necessidades} />
       <Header />
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-12">
         <Link href="/quiz" className="text-sm text-pink-600 hover:underline">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { TrackView } from "@/components/TrackView";
 
 const PASSOS = [
   { emoji: "📝", titulo: "Conte o que você precisa", texto: "Escolha suas necessidades de beleza num quiz rapidinho." },
@@ -11,6 +12,7 @@ const PASSOS = [
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
+      <TrackView tipo="home_vista" />
       <Header />
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center px-4 py-16 text-center">
         <span className="rounded-full bg-pink-100 px-4 py-1 text-sm font-medium text-pink-700">
