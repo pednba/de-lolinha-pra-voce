@@ -237,6 +237,31 @@ console.log('\nCode.gs (planilha simulada)');
 }
 
 // ---------------------------------------------------------------------------
+console.log('\nPrimeiro acesso');
+{
+  const { ctx, abas, props } = criarAmbiente();
+  teste('sem PIN, o app pede que um seja criado', () => {
+    assert.strictEqual(ctx.precisaDefinirPin(), true);
+  });
+  teste('PIN curto ou com letra é recusado', () => {
+    for (const ruim of ['123', 'abcd', '', '123456789']) assert.match(lanca(() => ctx.definirPin(ruim)), /4 a 8 n/);
+    assert.strictEqual(props.get('PIN'), undefined);
+  });
+  let token;
+  teste('criar o PIN já devolve acesso e monta a planilha', () => {
+    token = ctx.definirPin('482913');
+    assert.match(token, /^[0-9a-f-]{36}$/);
+    assert.strictEqual(ctx.precisaDefinirPin(), false);
+    assert.deepStrictEqual(abas.lancamentos.dados[0], Array.from(ctx.COLUNAS), 'aba criada sozinha');
+    assert.strictEqual(ctx.estado(token).resumo.totalReceber, 0);
+  });
+  teste('depois de criado, o PIN não pode ser trocado de fora', () => {
+    assert.match(lanca(() => ctx.definirPin('999999')), /já foi criado/);
+    assert.strictEqual(props.get('PIN'), '482913');
+  });
+}
+
+// ---------------------------------------------------------------------------
 console.log('\nIndex.html');
 {
   const html = fs.readFileSync(path.join(raiz, 'Index.html'), 'utf8');

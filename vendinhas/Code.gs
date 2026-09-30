@@ -37,8 +37,8 @@ function configurar() {
     '=QUERY(' + ABA + '!A1:K, "select C, sum(K) where A is not null group by C ' +
     'order by sum(K) desc label C \'cliente\', sum(K) \'saldo\'", 1)');
 
-  if (!PropertiesService.getScriptProperties().getProperty('PIN')) {
-    Logger.log('Falta o PIN: Configurações do projeto → Propriedades do script → PIN');
+  if (precisaDefinirPin()) {
+    Logger.log('Nenhum PIN ainda: o primeiro acesso ao app vai pedir a criação de um.');
   }
 }
 
@@ -50,6 +50,39 @@ function revogarAcessos() {
 // ---------------------------------------------------------------------------
 // Funções chamadas pelo navegador (google.script.run)
 // ---------------------------------------------------------------------------
+
+/** Só é verdadeiro antes de existir um PIN, no primeiro acesso ao app. */
+function precisaDefinirPin() {
+  return !PropertiesService.getScriptProperties().getProperty('PIN');
+}
+
+/**
+ * Cria o PIN no primeiro acesso e já devolve o acesso.
+ * Recusa se já existir um PIN, então ninguém troca o PIN de fora.
+ */
+function definirPin(pin) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    var props = PropertiesService.getScriptProperties();
+    if (props.getProperty('PIN')) throw new Error('O PIN já foi criado. Digite o seu PIN.');
+    var limpo = String(pin == null ? '' : pin).trim();
+    if (!/^\d{4,8}$/.test(limpo)) throw new Error('O PIN precisa ter de 4 a 8 números.');
+    props.setProperty('PIN', limpo);
+    abaLancamentos_();
+    return acessoNovo_(props);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function acessoNovo_(props) {
+  var tokens = lerTokens_(props);
+  var token = Utilities.getUuid();
+  tokens[token] = Date.now() + VALIDADE_ACESSO_DIAS * 86400000;
+  props.setProperty('TOKENS', JSON.stringify(tokens));
+  return token;
+}
 
 function entrar(pin) {
   var lock = LockService.getScriptLock();
@@ -67,12 +100,7 @@ function entrar(pin) {
       throw new Error('PIN incorreto.');
     }
     cache.remove('tentativas_pin');
-
-    var tokens = lerTokens_(props);
-    var token = Utilities.getUuid();
-    tokens[token] = Date.now() + VALIDADE_ACESSO_DIAS * 86400000;
-    props.setProperty('TOKENS', JSON.stringify(tokens));
-    return token;
+    return acessoNovo_(props);
   } finally {
     lock.releaseLock();
   }
@@ -158,7 +186,11 @@ function exigirAcesso_(token) {
 
 function abaLancamentos_() {
   var aba = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA);
-  if (!aba) throw new Error('A planilha ainda não foi configurada.');
+  if (!aba) {
+    // Primeiro uso, ou alguém apagou a aba: monta de novo em vez de quebrar.
+    configurar();
+    aba = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA);
+  }
   return aba;
 }
 

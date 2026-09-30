@@ -60,11 +60,11 @@
   <section id="tela-pin" hidden>
     <h1>Vendinhas da Loly</h1>
     <div class="cartao">
-      <label for="pin">Digite seu PIN</label>
+      <label for="pin" id="rotulo-pin">Digite seu PIN</label>
       <input id="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="12"
              onkeydown="if (event.key === 'Enter') entrarComPin()">
       <div id="erro-pin" class="erro" hidden></div>
-      <button class="primario largo" onclick="entrarComPin()">Entrar</button>
+      <button id="btn-pin" class="primario largo" onclick="entrarComPin()">Entrar</button>
     </div>
   </section>
 
@@ -166,6 +166,7 @@
   var envioAtual = '';
   var mostrarQuitados = false;
   var tokenMemoria = '';
+  var criandoPin = false;
 
   function $(id) { return document.getElementById(id); }
 
@@ -250,9 +251,19 @@
   }
 
   // --- PIN ---
+  // Na primeira vez que o app abre ainda não existe PIN: a tela vira "crie o seu".
+  function prepararPin() {
+    chamar('precisaDefinirPin').then(function (precisa) {
+      criandoPin = precisa;
+      $('rotulo-pin').textContent = precisa ? 'Escolha um PIN de 4 a 8 números' : 'Digite seu PIN';
+      $('btn-pin').textContent = precisa ? 'Criar PIN' : 'Entrar';
+      mostrar('tela-pin');
+    }).catch(function (e) { mostrar('tela-pin'); erro('erro-pin', e.message); });
+  }
+
   function entrarComPin() {
     erro('erro-pin', '');
-    chamar('entrar', $('pin').value).then(function (token) {
+    chamar(criandoPin ? 'definirPin' : 'entrar', $('pin').value).then(function (token) {
       salvarToken(token);
       $('pin').value = '';
       carregarInicio();
@@ -463,7 +474,7 @@
   }
 
   // --- partida ---
-  if (lerToken()) carregarInicio(); else mostrar('tela-pin');
+  if (lerToken()) carregarInicio(); else prepararPin();
 </script>
 </body>
 </html>

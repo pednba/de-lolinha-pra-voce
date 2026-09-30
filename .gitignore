@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# apps script (ids do projeto e da planilha)
+vendinhas/.clasp.json

@@ -1,0 +1,5 @@
+# Só os quatro arquivos do app vão para o Apps Script.
+testes/**
+LEIAME.md
+.claspignore
+.clasp.json
